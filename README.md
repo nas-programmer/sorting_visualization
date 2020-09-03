@@ -1,9 +1,14 @@
 # sorting_visualization
 
-Sorting Visualization Using Pygame Library of Python.
+Sorting Visualization.
 
+Python
 Modules Needed:
 Pygame
 Random 
 Sys
+
+C++
+Raylib
+
 
