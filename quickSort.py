@@ -4,8 +4,8 @@ WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 
-WIDTH = 640
-HEIGHT = 480
+WIDTH = 720
+HEIGHT = 400
 win_size = (WIDTH, HEIGHT)
 
 pygame.init()
@@ -22,9 +22,12 @@ w = int(WIDTH/n)
 h_arr = []
 state = []
 for i in range(w):
-    height = random.randint(0, 450)
+    height = random.randint(0, 400)
     h_arr.append(height)
     state.append(1)
+
+def maps(num, in_min, in_max, out_min, out_max):
+  return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 def partition(arr, start, end):
     for i in range(start, end):
@@ -55,49 +58,50 @@ stack[top] = end
 
 j = 0
 
+flag = False
+
 while True:
     win.fill((10, 10, 10))
 
-    if top >= 0:
-        end = stack[top]
-        top -= 1
-        start = stack[top]
-        top -= 1
+    if flag:
+        if top >= 0:
+            end = stack[top]
+            top -= 1
+            start = stack[top]
+            top -= 1
 
-        p = partition(h_arr, start, end)
+            p = partition(h_arr, start, end)
 
-        state[p] = 1
-        if p-1 > start:
-            top += 1
-            stack[top] = start
-            top += 1
-            stack[top] = p - 1
+            state[p] = 1
+            if p-1 > start:
+                top += 1
+                stack[top] = start
+                top += 1
+                stack[top] = p - 1
 
-        if p+1 < end:
-            top += 1
-            stack[top] = p+1
-            top += 1
-            stack[top] = end
+            if p+1 < end:
+                top += 1
+                stack[top] = p+1
+                top += 1
+                stack[top] = end
 
-    else:
-        if j < len(h_arr):
-            state[j] = 2
-            j+=1
+        else:
+            if j < len(h_arr):
+                state[j] = 2
+                j+=1
 
     for i in range(len(h_arr)):
-        if state[i] == 0:
-            color = RED
-        elif state[i] == 2:
-            color = GREEN
-        else:
-            color = WHITE
-        pygame.draw.rect(win, color, pygame.Rect(i*n, HEIGHT - h_arr[i], n, h_arr[i]))
+        h_ar = maps(h_arr[i], 0, 400, 20, 255)
+        pygame.draw.rect(win, (h_ar//3, h_ar, h_ar//4), pygame.Rect(int(i*n), (HEIGHT - h_arr[i])//2, n, h_arr[i]))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                flag = True 
 
-    clock.tick(30)
+    clock.tick(60)
     pygame.display.flip()    
 
